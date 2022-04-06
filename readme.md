@@ -22,7 +22,7 @@ Specify the right Journey for the script to populate Login or Registration Dashb
 
 ### Notes
 
-This script will only work for The default Login and Registration Journeys. The registration Journey must be named "Registration" and the Login Journey shouldn't do more than collecting `Platform Username`, `Platform Password` and a `Data Store` decision node. 
+This script will only work for The default Login and Registration Journeys. The registration Journey must be named "Registration" and the Login Journey shouldn't do more than collecting `Platform Username`, `Platform Password` and a `Data Store` decision node.
 
 When specifying `Login` as an argument you must specify a username and password. The `Registration` argument will generate fake users in the system to populate the registration dashboard
 
