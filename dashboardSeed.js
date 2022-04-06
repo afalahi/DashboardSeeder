@@ -106,4 +106,3 @@ function seedDashboard(
       });
   }
 }
-seedDashboard(100, 'Login', 'adam.smith@forgerock.com', 'Password@1');
