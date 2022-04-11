@@ -22,7 +22,7 @@ program
       )
       .argument(
         '<host>',
-        'Your IDC hostname without the protocol or path e.g "host.domain.com"'
+        'Your IDC am url e.g "https://host.domain.com/am"'
       )
       .argument(
         '<journey>',
