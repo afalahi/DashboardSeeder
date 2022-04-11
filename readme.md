@@ -44,7 +44,7 @@ Options:
 
 ### Notes
 
-This cli will only work for The default Login and Registration Journeys. The registration Journey must be named "Registration" and the Login Journey shouldn't do more than collecting `Platform Username`, `Platform Password` and a `Data Store` decision node.
+This cli will only work for The default Login and Registration Journeys. The registration Journey must be named "Registration" and the Login Journey shouldn't do more than collecting `Platform Username`, `Platform Password` and a `Data Store` decision node. The registered users have a `@forgeblocks.com` email to make it easier to delete them later, manually; the CLI doesn't delete users
 
 #### Journey build
 

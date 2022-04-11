@@ -1,9 +1,10 @@
 #! /usr/bin/env node --experimental-json-modules --no-warnings
 
 import { Command } from 'commander';
-
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 import seedDashboard from '../dashboardSeed.js';
-import pkg from '../package.json' assert {type: "json"};
+const pkg = require('../package.json')
 
 const program = new Command();
 
