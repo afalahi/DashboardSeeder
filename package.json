@@ -11,6 +11,10 @@
   "bin": {
     "dashseeder": "./bin/index.js"
   },
+  "repository": {
+    "url": "https://github.com/afalahi/DashboardSeeder",
+    "type": "git"
+  },
   "license": "ISC",
   "dependencies": {
     "@faker-js/faker": "^6.1.2",
