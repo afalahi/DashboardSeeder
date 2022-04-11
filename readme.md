@@ -1,4 +1,4 @@
-# This is a Forgerock Dashboard seeder to see logins and registration
+# This is a Forgerock Dashboard seeder to populate the dashboard with activity
 
 ## Usage
 
