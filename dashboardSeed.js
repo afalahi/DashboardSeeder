@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import axios from 'axios';
 import fs from 'fs';
+import chalk from 'chalk'
 
 import handleCallbacks from './handelCallbacks.js';
 /**
@@ -11,32 +12,27 @@ import handleCallbacks from './handelCallbacks.js';
  * @param {string} hostName
  * @param {string} realmName
  */
-function seedDashboard(iterations, service, fileName, hostName, realmName) {
+export default function seedDashboard(
+  iterations,
+  hostName,
+  service,
+  realmName,
+  fileName
+) {
   const amUrl = (() => {
     try {
-      const getHost = new RegExp(
-        "^[a-z][a-z0-9+-.]*://([a-z0-9-._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[[a-z0-9-._~%!$&'()*+,;=:]+])"
-      ).exec(hostName);
-      if (getHost === null) {
-        if (hostName.slice(hostName.lastIndexOf('/')) !== '/am') {
-          console.error('This function only works with forgerock cloud');
-          return;
-        } else {
-          hostName = hostName.slice(
-            -hostName.length,
-            hostName.lastIndexOf('/')
-          );
-        }
-        return `https://${hostName}/am`;
+      const lastChar = hostName.slice(-1);
+      if (lastChar !== '/') {
+        return hostName + '/';
       }
-      return `https://${getHost[2]}/am`;
+      return hostName;
     } catch (err) {
-      throw new Error(
-        `The hostname: ${hostName} you entered is invalid. Please use format 'host.domain.tld'`
-      );
+      console.error(chalk.red.bold(err));
+      return '';
     }
   })();
   const realm = `realms/root/realms/${realmName}`;
+  const url = `json/${realm}/authenticate?authIndexType=service&authIndexValue=${service}`;
 
   const request = axios.create({
     baseURL: amUrl,
@@ -48,7 +44,7 @@ function seedDashboard(iterations, service, fileName, hostName, realmName) {
   request
     .request({
       method: 'post',
-      url: `/json/${realm}/authenticate?authIndexType=service&authIndexValue=${service}`,
+      url: url,
     })
     .then(res => {
       const { authId, callbacks } = res.data;
@@ -71,24 +67,29 @@ function seedDashboard(iterations, service, fileName, hostName, realmName) {
           request
             .request({
               method: 'post',
-              url: `/json/${realm}/authenticate?authIndexType=service&authIndexValue=${service}`,
+              url: url,
               data: payload,
+            })
+            .then(res => {
+              if (res.status === 200) {
+                users[i] = inputs;
+                console.log(chalk.blue(`Registered User #${i}`));
+                fs.promises.writeFile(`${fileName}`, JSON.stringify(users));
+              } else {
+                console.error(chalk.red.bold(JSON.stringify(res.data)));
+              }
             })
             .catch(err => {
               if (err.response) {
-                console.log(err.response.data);
+                console.error(err.response.data);
+                return;
               }
             });
-          users[i] = inputs;
-          console.log(`Registered User #${i}`);
-        }
-        if (fileName) {
-          fs.promises.writeFile(`${fileName}`, JSON.stringify(users));
         }
       } else {
         if (!fs.existsSync(fileName)) {
           console.error(
-            'No users file exits. A users files is needed in order to count unique logins'
+            chalk.red.bold('No users file exits. A users files is needed in order to count unique logins. Provide a file or run the program with Registration Journey')
           );
           return;
         }
@@ -101,15 +102,27 @@ function seedDashboard(iterations, service, fileName, hostName, realmName) {
           request
             .request({
               method: 'post',
-              url: `/json/${realm}/authenticate?authIndexType=service&authIndexValue=${service}`,
+              url: url,
               data: payload,
             })
             .then(res => {
-              console.log(`Logged in user: ${inputs[i].username}`);
+              if (res.status === 200) {
+                setTimeout(
+                  () =>
+                    console.log(
+                      chalk.blue(`Logged in user: ${JSON.stringify(inputs[i].username)}`)
+                    ),
+                  5000
+                );
+              } else {
+                console.error(chalk.red.bold(JSON.stringify(res.data)))
+                return
+              }
             })
             .catch(err => {
               if (err.response) {
-                console.error(err.response.data);
+                console.error(chalk.red.bold(JSON.stringify(err.response.data)));
+                return;
               }
             });
         }
@@ -117,7 +130,8 @@ function seedDashboard(iterations, service, fileName, hostName, realmName) {
     })
     .catch(err => {
       if (err.response) {
-        console.error(err.response.data);
+        console.error(chalk.red.bold(JSON.stringify(err.response.data)));
+        return;
       }
     });
 }

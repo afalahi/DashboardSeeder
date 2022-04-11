@@ -1,3 +1,5 @@
+import chalk from 'chalk'
+
 /**
  * 
  * @param {Object[]} callbacks - Identity cloud Journey callbacks payload
@@ -11,7 +13,7 @@
  */
 export default function handleCallbacks(callbacks, inputs) {
   if (!Array.isArray(callbacks)) {
-    console.error(`callbacks must be of type array`);
+    console.error(chalk.red.bold(`callbacks must be of type array we received ${callbacks}`));
     return;
   }
   const { username, password, givenName, sn, mail } = inputs;
