@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import axios from 'axios';
 import fs from 'fs';
-import chalk from 'chalk'
+import chalk from 'chalk';
 
 import handleCallbacks from './handelCallbacks.js';
 /**
@@ -63,6 +63,7 @@ export default function seedDashboard(
               return this.username;
             },
           };
+          users[i] = inputs;
           payload = { authId, callbacks: handleCallbacks(callbacks, inputs) };
           request
             .request({
@@ -72,8 +73,7 @@ export default function seedDashboard(
             })
             .then(res => {
               if (res.status === 200) {
-                users[i] = inputs;
-                console.log(chalk.blue(`Registered User #${i}`));
+                console.log(chalk.blue(`Registered User #${users[i].username}`));
                 fs.promises.writeFile(`${fileName}`, JSON.stringify(users));
               } else {
                 console.error(chalk.red.bold(JSON.stringify(res.data)));
@@ -89,7 +89,9 @@ export default function seedDashboard(
       } else {
         if (!fs.existsSync(fileName)) {
           console.error(
-            chalk.red.bold('No users file exits. A users files is needed in order to count unique logins. Provide a file or run the program with Registration Journey')
+            chalk.red.bold(
+              'No users file exits. A users files is needed in order to count unique logins. Provide a file or run the program with Registration Journey'
+            )
           );
           return;
         }
@@ -110,18 +112,22 @@ export default function seedDashboard(
                 setTimeout(
                   () =>
                     console.log(
-                      chalk.blue(`Logged in user: ${JSON.stringify(inputs[i].username)}`)
+                      chalk.blue(
+                        `Logged in user: ${JSON.stringify(inputs[i].username)}`
+                      )
                     ),
                   5000
                 );
               } else {
-                console.error(chalk.red.bold(JSON.stringify(res.data)))
-                return
+                console.error(chalk.red.bold(JSON.stringify(res.data)));
+                return;
               }
             })
             .catch(err => {
               if (err.response) {
-                console.error(chalk.red.bold(JSON.stringify(err.response.data)));
+                console.error(
+                  chalk.red.bold(JSON.stringify(err.response.data))
+                );
                 return;
               }
             });
