@@ -15,7 +15,7 @@ Seed Forgerock IDC Dashboard with activity
 
 Arguments:
   iterations           Number of logins/registrations you want the program to run
-  host                 Your IDC hostname without the protocol or path e.g "host.domain.com"
+  host                 Your IDC am url e.g "https://host.domain.com/am"
   journey              The name of your journey. Current supported is default Login and Registration
 
 Options:
