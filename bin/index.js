@@ -3,7 +3,7 @@
 import { Command } from 'commander';
 
 import seedDashboard from '../dashboardSeed.js';
-const pkg = require('../package.json');
+import pkg from '../package.json' assert {type: "json"};
 
 const program = new Command();
 
